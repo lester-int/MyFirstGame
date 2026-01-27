@@ -20,10 +20,10 @@ public class collisionSystem {
         float y = p.getY() + v.getY() * p.getSpeed() * delta;
 
 
-        if(x+15 <0) return false;
-        if(y+10 <0) return false;
-        if(x + p.getWidth() -15 > this.screenWidth) return false;
-        if(y + p.getHeight() -10 > this.screenHeight) return false;
+        if(x <0) return false;
+        if(y <0) return false;
+        if(x + p.getWidth() > this.screenWidth) return false;
+        if(y + p.getHeight() > this.screenHeight) return false;
 
         return true;
     }

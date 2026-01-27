@@ -31,8 +31,6 @@ public class Main extends ApplicationAdapter {
         this.player = new Player(100,300);
         this.collisionSystem = new collisionSystem(this.screenHeight,this.screenWidth);
         this.movementSystem = new MovementSystem();
-        
-        TexturePlayer = new Texture("twink.png");
 
     }
 
@@ -46,9 +44,13 @@ public class Main extends ApplicationAdapter {
         Vector2 v = movementSystem.direction();
 
         if(collisionSystem.canMove(this.player,v,delta)){movementSystem.apply(this.player,v,delta);}
+        
+        boolean isMoving = v.getX() !=0 || v.getY() !=0;
+
+        player.update(delta,isMoving,v);
 
         batch.begin();
-        batch.draw(TexturePlayer,this.player.getX(),this.player.getY(),this.player.getWidth(),this.player.getHeight());
+        player.draw(batch);
         batch.end();
     }
 
