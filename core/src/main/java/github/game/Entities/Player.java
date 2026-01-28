@@ -1,5 +1,7 @@
 package github.game.Entities;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -16,6 +18,10 @@ public class Player {
     private float width = 40;
     private float speed = 100f;
     private boolean facingLeft = true;
+    private float jumpPower = 250f;
+    private float gravity = -500f;
+    private float VelocityY = 0f;
+    private boolean isJumping = false;
     
     //Animations attributes 
     private Texture spriteSheet;
@@ -65,8 +71,15 @@ public class Player {
         for(int i=0;i<10;i++){dyingFrames[i]=sheet[6][i];}
         dyingAnimation = new Animation<>(0.3f, dyingFrames);
 
-        currentFrame = standingAnimation.getKeyFrame(0);
+        TextureRegion[] jumpingFrames = new TextureRegion[4];
+        for(int i=0;i<4;i++){jumpingFrames[i] = sheet[3][i];}
+        jumpingAnimation = new Animation<>(0.06f, jumpingFrames);
 
+        TextureRegion[] fallingFrames = new TextureRegion[4];
+        for(int i=0;i<4;i++){fallingFrames[i]=sheet[4][i];}
+        fallingAnimation = new Animation<>(0.06f, fallingFrames);
+
+         currentFrame = standingAnimation.getKeyFrame(0);
     }
 
     public void update(float delta,Boolean isMoving,Vector2 v){
@@ -76,8 +89,11 @@ public class Player {
         if(v.getX()<0 && !facingLeft){this.facingLeft =true;flipFrames();}
         else if(v.getX()>0 && facingLeft){this.facingLeft = false;flipFrames();}
 
-        if(isMoving){currentFrame = walkingAnimation.getKeyFrame(stateTime,true);
+        else if(isJumping && this.VelocityY > 0){currentFrame = jumpingAnimation.getKeyFrame(stateTime,true);}
+        else if(isJumping && this.VelocityY <0){currentFrame = fallingAnimation.getKeyFrame(stateTime,true);}
 
+        else if(isMoving){currentFrame = walkingAnimation.getKeyFrame(stateTime,true);
+        
         }else{currentFrame = standingAnimation.getKeyFrame(stateTime,true);}  
     
     }
@@ -89,6 +105,39 @@ public class Player {
 
         for(TextureRegion frame : standingAnimation.getKeyFrames()){frame.flip(true,false);}
 
+        for(TextureRegion frame : jumpingAnimation.getKeyFrames()){frame.flip(true,false);}
+
+        for(TextureRegion frame : fallingAnimation.getKeyFrames()){frame.flip(true,false);}
+
+    }
+
+    public void jump(){
+
+        if(Gdx.input.isKeyPressed(Input.Keys.W) && !isJumping){
+
+            this.VelocityY = this.jumpPower;
+            this.isJumping = true;
+
+        }
+
+    }
+
+    public void applyGravity(float delta){
+
+        this.VelocityY += this.gravity * delta;
+        float nextY = this.y + this.VelocityY * delta;
+
+        if(nextY < 200){
+
+            this.y = 200;
+            this.isJumping = false;
+
+        }else{
+
+            this.y = nextY;
+
+        }
+        
     }
 
     public void draw(SpriteBatch batch){

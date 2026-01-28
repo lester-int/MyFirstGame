@@ -28,7 +28,7 @@ public class Main extends ApplicationAdapter {
         this.screenHeight = Gdx.graphics.getHeight();
         this.screenWidth = Gdx.graphics.getWidth();
         batch = new SpriteBatch();
-        this.player = new Player(100,300);
+        this.player = new Player(100,200);
         this.collisionSystem = new collisionSystem(this.screenHeight,this.screenWidth);
         this.movementSystem = new MovementSystem();
 
@@ -44,8 +44,11 @@ public class Main extends ApplicationAdapter {
         Vector2 v = movementSystem.direction();
 
         if(collisionSystem.canMove(this.player,v,delta)){movementSystem.apply(this.player,v,delta);}
-        
-        boolean isMoving = v.getX() !=0 || v.getY() !=0;
+
+        boolean isMoving = v.getX() !=0;
+
+        player.jump();
+        player.applyGravity(delta);
 
         player.update(delta,isMoving,v);
 

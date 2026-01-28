@@ -14,8 +14,6 @@ public class MovementSystem {
 
         if(Gdx.input.isKeyPressed(Input.Keys.A)) x-=1;
         if(Gdx.input.isKeyPressed(Input.Keys.D)) x+=1;
-        if(Gdx.input.isKeyPressed(Input.Keys.W)) y+=1;
-        if(Gdx.input.isKeyPressed(Input.Keys.S)) y-=1;
 
         return new Vector2(x,y);
 
@@ -24,7 +22,6 @@ public class MovementSystem {
     public void apply(Player p, Vector2 v, float delta){
 
         p.setX(p.getX() + v.getX() * p.getSpeed() * delta);
-        p.setY(p.getY() + v.getY() * p.getSpeed() * delta);
 
     }
     
